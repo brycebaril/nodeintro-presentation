@@ -123,6 +123,7 @@ setTimeout(function () {
 
           <section>
             <h2>How does Node do this?</h2>
+            <p>Magic &amp; libuv</p>
             <img src="img/magic.gif" width=500 height=300>
           </section>
           <section>
@@ -225,14 +226,14 @@ greet("you")
           <section>
             <h2>JavaScript Everywhere!</h2>
             <p>
-              You can write JavaScript that will run in either Node or the browser. This takes a small amount of effort, and is best for non-IO tasks. (E.g. the browser doesn't have access to a filesystem.)
+              You can write a JavaScript file that will run in either Node or the browser. However, browsers don't have the same features as Node.
             </p>
           </section>
 
           <section>
             <h2>Browserify</h2>
             <p>
-              There are also tools, such as Browserify, that will convert almost much *any* Node.js code to be browser compatible. It will polyfill as much as possible with browser versions. (E.g. using HTML5 LocalStorage to emulate the filesystem.)
+              Browserify will convert almost *any* Node.js code to be browser compatible. It will polyfill as much as possible with browser analogs.
             </p>
           </section>
           <section>
@@ -293,7 +294,7 @@ greet("you")
           <section>
             <h2>Standing on the shoulders of giants</h2>
             <p>
-              Every new technology that comes out incorporates lessons from its predecessors. Node learned from Perl (CPAN), Ruby on Rails, Python Twisted, etc.
+              Every new technology that comes out incorporates lessons from the successes and failures of its predecessors.
             </p>
           </section>
 
@@ -331,7 +332,13 @@ greet("you")
           <section>
             <h2>Cooperative Multitasking</h2>
             <p>
-              If the CPU is pegged, the IO operations get blocked.
+              If the CPU is pegged, the event loop gets blocked.
+            </p>
+          </section>
+          <section>
+            <h2>Synchronous == Blocking</h2>
+            <p>
+              If you intentionally block the event loop, the event loop gets blocked.
             </p>
           </section>
           <section>
@@ -342,7 +349,7 @@ greet("you")
           <section>
             <h2>V8 Memory Limitations</h2>
             <p>
-              By Default the V8 JavaScript heap is about 2gb. This can be configured higher, but you're going to start paying a lot of GC costs.
+              By Default the V8 JavaScript heap is about 2gb. This can be configured higher, but beware of GC costs.
             </p>
           </section>
         </section>
@@ -420,11 +427,31 @@ process.memoryUsage()
           <section>
             <h2>Exception Handling</h2>
             <p>
-              This is actually a fairly advanced topic for Node.js due to the asynchronous nature. For beginners, I suggest letting errors bubble up and let your program crash.
+              The Async nature of Node.js makes Exception Handling an even harder topic than usual.
             </p>
             <p>
-              When you're ready, you can check out process.uncaughtException and Domains
+              When you're ready, you can check out process.uncaughtException and Domains.
             </p>
+          </section>
+
+          <section>
+            <h2>Exception Handling</h2>
+              <pre><code data-trim contenteditable>
+someAsyncThing(foo, function (err, reply) {
+  if (err) {
+    console.log(err)
+    return // IMPORTANT
+  }
+  return doStuff(reply)
+})
+
+takesCallback(foo, callback) {
+  someAsyncThing(foo, function (err, reply) {
+    if (err) return callback(err)
+    return doStuff(reply)
+  })
+}
+              </code></pre>
           </section>
 
           <section>
@@ -433,8 +460,8 @@ process.memoryUsage()
               <ul>
                 <li>Never invoking callbacks</li>
                 <li>Invoking callbacks multiple times</li>
-                <li>Not checking for errors</li>
                 <li>Throwing errors in async code</li>
+                <li>Not checking for errors</li>
                 <li>Mixing Async &amp; Sync in the same API</li>
                 <li>Just because you're using a callback does not make it Async</li>
               </ul>
