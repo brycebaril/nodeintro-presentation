@@ -1,0 +1,74 @@
+* A Brief Intro to Node.js
+
+* What is Node.js
+  * "Node's goal is to provide an easy way to build scalable network programs" - http://nodejs.org/about
+  * Javascript on the server
+    * Ugh... Javascript?
+      * Single target.
+      * ES5 (with some ES6 features)
+    * Chrome's V8 Engine
+    * C++ Extensions
+    * libuv
+    * Cross platform!
+
+
+----
+
+* What makes it different?
+  * Asynchronous/Non-blocking IO
+    * callbacks
+    (this is the single most difficult thing to get right & used to doing when trying Node)
+    * EventEmitters
+    * Streams
+
+* Why is it so compelling?
+  * Javascript. Odds are good nearly every one of you has written some, and will write more.
+  * Fast out of the gate
+  * Just the right stuff in the core
+    * No need for external systems to scale it or make it fast (e.g. Apache)
+  * Standing on the shoulders of giants
+    * Did a great job incorporating the teachings of predecessors, CPAN, Ruby on Rails, Twisted, etc.
+    * 1st Post-github platform
+    * Focused on vogue tasks: Building web applications at scale
+    * Best-in-class module system (module adoption graph?)
+  * New enough that the passion/burn-out ratio highly favors passion & excitement.
+
+* What is it not good at?
+  * Heavy CPU tasks... sort-of.
+    * CPU activity blocks the IO processes from operating.
+    * Cooperative Multitasking
+    * In reality this is no worse than other languages, just counter-productive to the core-strength of Node (async IO)
+  * Memory intensive tasks
+    * V8 intentional memory cap for Javascript space
+    * Can exceed cap with binary data, but non-trivial.
+
+* How to Node
+  * Javascript (again)
+    * I *thought* I knew js. Then I started writing node and *actually* learned it.
+    * You almost certainly know enough to get started.
+  * Callback Hell
+  * libuv & process/thread symtantics
+    * All js code is synchronous
+  * Memory model
+    * GC (RSS/heap)
+    * Javascript data vs. C++ data (Buffers)
+  * Core modules
+    * api docs are pretty great
+  * Advanced
+    * Exception handling. As a beginner I suggest the policy of: "Let your program crash"
+    * process.uncaughtException & Domains -- left as an exercise for the user.
+
+
+
+* Demo
+
+  * NPM
+  * http server / callback hell
+  * EventEmitters
+  * Streams
+  * Browserify?
+
+
+* Where do I start?
+  * nodejs.org/api
+  * nodeschool.io

@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>A Brief Intro To Node.js</title>
+
+    <meta name="description" content="A Brief Intro To Node.js">
+    <meta name="author" content="Bryce B. Baril">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+      document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+
+        <section>
+          <h1>JavaScript, On the SERVER?</h1>
+          <h2>A Brief Intro to Node.js</h2>
+          <img src="img/logo.png">
+          <p>
+            <small>Bryce Baril <a href="http://twitter.com/brycebaril">@brycebaril</a></small>
+          </p>
+        </section>
+
+        <section>
+          <section>
+            <h2>What is Node.js?</h2>
+            <p>
+              <blockquote cite="http://nodejs.org/about">
+                &ldquo;Node's goal is to provide an easy way to build scalable network programs&rdquo;
+              </blockquote> <a href="http://nodejs.org/about">nodejs.org</a>
+            </p>
+          </section>
+
+          <section>
+            <h2>JavaScript, on the server!?!</h2>
+            <p>
+              <ul>
+                <li>Chrome's V8 Engine</li>
+                <li>C++ Extensions</li>
+                <li>libuv</li>
+                <li>Cross Platform!</li>
+              </ul>
+            </p>
+          </section>
+
+          <section>
+            <h2>Ugh... JavaScript?</h2>
+            <img src="img/NOPE.gif" width=500 height=300>
+          </section>
+          <section>
+            <h2>Ugh... JavaScript?</h2>
+            <p>
+              Actually... Turns out JS is a pretty neat language, and Node.js gives you:
+              <ul>
+                <li>A single target (no IE6!)</li>
+                <li>ES5 (with some ES6 features)</li>
+              </ul>
+            </p>
+          </section>
+        </section>
+
+        <section>
+          <h2>What makes Node different?</h2>
+          <p>
+            <ul>
+              <li>Asynchronous/Non-blocking IO</li>
+              <li>Js Everywhere!</li>
+            </ul>
+          </p>
+        </section>
+
+        <section>
+          <section>
+            <h2>Asynchronous/Non-blocking IO</h2>
+            <p>
+              This is the single most difficult thing to get used to when using Node.
+            </p>
+          </section>
+
+          <section>
+            <h2>Async vs Sync Code</h2>
+            <p>
+              <pre><code data-trim contenteditable>
+printf("one\n");
+sleep(2);
+printf("two\n");
+
+              </code></pre>
+              vs.
+              <pre><code data-trim contenteditable>
+console.log("one")
+setTimeout(function () {
+  console.log("two")
+}, 2000)
+              </code></pre>
+            </p>
+          </section>
+
+          <section>
+            <h2>How does Node do this?</h2>
+            <img src="img/magic.gif" width=500 height=300>
+          </section>
+          <section>
+            <h2>How does Node do this?</h2>
+            <p>
+              All IO operations are handled outside of the vertical process flow.
+            </p>
+          </section>
+
+          <section>
+            <h2>Huh?</h2>
+            <p>
+              Vertical process flow?
+            </p>
+          </section>
+
+          <section>
+            <h2>Process Flow in Node</h2>
+            <p>
+              ... is really the same as in the browser.
+              <pre><code data-trim contenteditable>
+function greet(who) {
+  console.log("Hello")
+  console.log("how")
+  function sayWho() {
+    console.log(who + "?")
+  }
+  setTimeout(sayWho, 0)
+  console.log("are")
+}
+              </code></pre>
+            </p>
+          </section>
+
+          <section>
+            <h2>Callbacks</h2>
+            <p>
+              When functions are created, they contain the state context of where they were created.
+              <pre><code data-trim contenteditable>
+function greet(who) {
+  console.log("Hello")
+  console.log("how")
+  function sayWho() {
+    console.log(who + "?")
+  }
+  process.nextTick(sayWho)
+  console.log("are")
+}
+              </code></pre>
+            </p>
+          </section>
+
+          <section>
+            <h2>Callback functions as continuations</h2>
+            <p>
+              All of this relies on functions being first class variable types. This is the standard way of passing continuations in Node.
+            </p>
+          </section>
+
+          <section>
+            <h2>Process Flow in Node</h2>
+            <p>
+              Synchronous code tends to be vertical (top->bottom), and asynchronous: horizontal (left->right).
+              <pre><code data-trim contenteditable>
+function greet(who) {
+  console.log("Hello")
+  console.log("how")
+  function sayWho() {
+    process.nextTick(function () {
+      console.log("?")
+    })
+    console.log(who)
+  }
+  process.nextTick(sayWho)
+  console.log("are")
+}
+              </code></pre>
+            </p>
+          </section>
+
+          <section>
+            <h2>Asynchronous Concepts</h2>
+            <p>
+              <ul>
+                <li>callbacks (Timers &amp; IO libraries)</li>
+                <li>EventEmitters</li>
+                <li>Streams</li>
+                <li>Promises (not in core)</li>
+                <li>Generators (ES6, coming soon)</li>
+              </ul>
+            </p>
+          </section>
+
+        </section>
+
+        <section>
+          <section>
+            <h2>JavaScript Everywhere!</h2>
+            <p>
+              You can write JavaScript that will run in either Node or the browser. This takes a small amount of effort, and is best for non-IO tasks. (E.g. the browser doesn't have access to a filesystem.)
+            </p>
+          </section>
+
+          <section>
+            <h2>Browserify</h2>
+            <p>
+              There are also tools, such as Browserify, that will convert almost much *any* Node.js code to be browser compatible. It will polyfill as much as possible with browser versions. (E.g. using HTML5 LocalStorage to emulate the filesystem.)
+            </p>
+          </section>
+          <section>
+            <h2>Browserify</h2>
+            <img src="img/wuuut.gif" width=500 height=300>
+          </section>
+
+          <section>
+            <h2>Single Language Stack!</h2>
+            <p>
+              Node.js finally fulfills the promise of a single-language stack. (Looking at you, GWT...)
+            </p>
+          </section>
+
+        </section>
+
+        <section>
+          <section>
+            <h2>So why is Node so compelling?</h2>
+            <p>
+            </p>
+          </section>
+
+          <section>
+            <h2>JavaScript</h2>
+            <p>
+              Odds are good you already know and use JavaScript.
+            </p>
+          </section>
+
+          <section>
+            <h2>Asynchronous IO = Fast</h2>
+            <p>
+              For typical web-based applications, the IO operations are the bottlenecks.
+            </p>
+            <p>
+              With Node, there is no need for external systems to scale or parallelize IO bandwidth. (e.g. Apache mod_php mod_perl, etc.)
+            </p>
+          </section>
+
+          <section>
+            <h2>Just the right stuff in Node core.</h2>
+            <p>
+              All the most common stuff you'll need is built delivered right with the language:
+              <ul>
+                <li>Socket Communication</li>
+                <li>Filesystem</li>
+                <li>HTTP(S) server/client</li>
+                <li>JSON</li>
+                <li>Crypto</li>
+                <li>Buffers (for binary data)</li>
+                <li>Streams</li>
+                <li>EventEmitters</li>
+              </ul>
+            </p>
+          </section>
+
+          <section>
+            <h2>Standing on the shoulders of giants</h2>
+            <p>
+              Every new technology that comes out incorporates lessons from its predecessors. Node learned from Perl (CPAN), Ruby on Rails, Python Twisted, etc.
+            </p>
+          </section>
+
+          <section>
+            <h2>Best-in-class package manager.</h2>
+            <p>
+              From <a href="http://modulecounts.com">modulecounts.com</a>
+              <img src="img/module_counts.png">
+            </p>
+          </section>
+
+          <section>
+            <h2>It is young</h2>
+            <p>
+              While in some ways this can be a disadvantage it does bring a few great benefits:
+              <ul>
+                <li>Use cases are targeted around the most modern paradigm.</li>
+                <li>A favorable passion to burn-out ratio. Lots of talented, excited developers in the community.</li>
+              </ul>
+            </p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>What is Node not good at?</h2>
+            <p>
+              <ul>
+                <li>Heavy CPU Tasks</li>
+                <li>Memory intensive tasks</li>
+              </ul>
+            </p>
+          </section>
+
+          <section>
+            <h2>Cooperative Multitasking</h2>
+            <p>
+              If the CPU is pegged, the IO operations get blocked.
+            </p>
+          </section>
+          <section>
+            <h2>Don't Block the Event Loop</h2>
+            <img src="img/blocking.gif" width=500 height=300>
+          </section>
+
+          <section>
+            <h2>V8 Memory Limitations</h2>
+            <p>
+              By Default the V8 JavaScript heap is about 2gb. This can be configured higher, but you're going to start paying a lot of GC costs.
+            </p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>How To Node</h2>
+            <p>
+              After that <strike>short</strike> intro, let's delve into some key concepts.
+            </p>
+          </section>
+
+          <section>
+            <h2>JavaScript (again...)</h2>
+            <p>
+              When I started working with Node I thought I knew JavaScript. Node will help you <strong>actually</strong> learn it.
+            </p>
+          </section>
+
+          <section>
+            <h2>libuv &amp; JavaScript</h2>
+            <p>
+              libuv is the back-end that provides the asynchronous to Node. It has back-end threads that abstract all of that out for you.
+            </p>
+            <p>
+              Any JavaScript code in a single context is Synchronous.
+            </p>
+          </section>
+
+          <section>
+            <h2>libuv event loop</h2>
+            <p>
+              <img src="img/loop.png">
+            </p>
+          </section>
+
+          <section>
+            <h2>Internal reference count</h2>
+            <p>
+              Node keeps track of "pending" things. Your application won't exit until this number is zero. (Open sockets, timers...)
+            </p>
+          </section>
+
+          <section>
+            <h2>Memory Model</h2>
+            <p>
+              <pre><code>
+process.memoryUsage()
+{ rss: 10371072,
+  heapTotal: 7195904,
+  heapUsed: 2442752 }
+              </code></pre>
+              <ul>
+                <li>rss -- Everything (Buffers, C++/libuv + Heap)</li>
+                <li>heapTotal -- Allocated JavaScript object memory</li>
+                <li>heapUsed -- Heap space currently in use</li>
+              </ul>
+            </p>
+          </section>
+
+          <section>
+            <h2>Core Modules</h2>
+            <p>
+              The <a href="http://nodejs.org/api/">node docs</a> are pretty great.
+            </p>
+          </section>
+
+          <section>
+            <h2>NPM</h2>
+            <p>
+              <a href="http://npmjs.org">npm</a> is Node's package manager. It is packaged directly with Node.
+            </p>
+          </section>
+
+          <section>
+            <h2>Exception Handling</h2>
+            <p>
+              This is actually a fairly advanced topic for Node.js due to the asynchronous nature. For beginners, I suggest letting errors bubble up and let your program crash.
+            </p>
+            <p>
+              When you're ready, you can check out process.uncaughtException and Domains
+            </p>
+          </section>
+
+          <section>
+            <h2>Common Beginner Mistakes</h2>
+            <p>
+              <ul>
+                <li>Never invoking callbacks</li>
+                <li>Invoking callbacks multiple times</li>
+                <li>Not checking for errors</li>
+                <li>Throwing errors in async code</li>
+                <li>Mixing Async &amp; Sync in the same API</li>
+                <li>Just because you're using a callback does not make it Async</li>
+              </ul>
+            </p>
+          </section>
+
+        </section>
+
+        <section>
+          <section>
+            <h2>WARNING LIVE DEMOS</h2>
+            <img src="img/michael.gif" width=500 height=300>
+          </section>
+          <section>
+            <h2>WARNING LIVE DEMOS</h2>
+            <p>
+              To play along:
+              <ol>
+                <li>make sure you have node &amp; git installed</li>
+                <li>git clone git@github.com:brycebaril/nodeintro.git</li>
+                <li>cd nodeintro</li>
+                <li>npm install</li>
+              </ol>
+            </p>
+          </section>
+        </section>
+
+        <section>
+          <h2>Where to go from here?</h2>
+          <ul>
+            <li><a href="http://nodejs.org/api">The API Docs</a></li>
+            <li><a href="http://nodeschool.io">nodeschool.io</a></li>
+          </ul>
+          <p>
+            Let me know how it goes! <a href="http://twitter.com/brycebaril">@brycebaril</a>
+          </p>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+          // { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+          // { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>
