@@ -371,11 +371,23 @@ greet("you")
 
           <section>
             <h2>libuv &amp; JavaScript</h2>
+            <p>Node is single-process</p>
+          </section>
+
+          <section>
+            <h2>libuv &amp; JavaScript</h2>
             <p>
-              libuv is the back-end that provides the asynchronous to Node. It has back-end threads that abstract all of that out for you.
+              libuv is the back-end that provides the asynchronous to Node.
             </p>
             <p>
-              Any JavaScript code in a single context is Synchronous.
+              It uses back-end threads to run the event loop and handle continuations.
+            </p>
+          </section>
+
+          <section>
+            <h2>libuv &amp; JavaScript</h2>
+            <p>
+              Worth mentioning again: Any JavaScript code in a single context is Synchronous.
             </p>
           </section>
 
@@ -420,7 +432,7 @@ process.memoryUsage()
           <section>
             <h2>NPM</h2>
             <p>
-              <a href="http://npmjs.org">npm</a> is Node's package manager. It is packaged directly with Node.
+              <a href="http://npmjs.org">npm</a> is Node's package manager. It is packaged directly with Node. It is awesome.
             </p>
           </section>
 
@@ -428,9 +440,6 @@ process.memoryUsage()
             <h2>Exception Handling</h2>
             <p>
               The Async nature of Node.js makes Exception Handling an even harder topic than usual.
-            </p>
-            <p>
-              When you're ready, you can check out process.uncaughtException and Domains.
             </p>
           </section>
 
@@ -455,6 +464,13 @@ takesCallback(foo, callback) {
           </section>
 
           <section>
+            <h2>Advanced Exception Handling</h2>
+            <p>
+              When you're ready, you can check out process.uncaughtException and Domains.
+            </p>
+          </section>
+
+          <section>
             <h2>Common Beginner Mistakes</h2>
             <p>
               <ul>
@@ -462,8 +478,8 @@ takesCallback(foo, callback) {
                 <li>Invoking callbacks multiple times</li>
                 <li>Throwing errors in async code</li>
                 <li>Not checking for errors</li>
-                <li>Mixing Async &amp; Sync in the same API</li>
                 <li>Just because you're using a callback does not make it Async</li>
+                <li>Mixing Async &amp; Sync in the same API</li>
               </ul>
             </p>
           </section>
